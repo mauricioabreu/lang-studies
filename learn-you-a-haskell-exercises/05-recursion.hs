@@ -61,7 +61,10 @@ stepReverseSign n s
  -}
 
 piCalc :: (Fractional a, Integral b, Ord a) => a -> (a, b)
-piCalc a = undefined
+piCalc tolerance = piCalc' 1 0.0 tolerance 0
 
 piCalc' :: (Ord a, Fractional a, Integral b) => a -> a -> a -> b -> (a, b)
-piCalc' w x y z = undefined
+piCalc' denominator prevPi tolerance times
+    | abs (currPi - prevPi) < tolerance = (prevPi, times)
+    | otherwise = piCalc' (denominator + 2) currPi tolerance (times + 1)
+    where currPi = prevPi + (-1) ^ mod times 2 * 4 / denominator

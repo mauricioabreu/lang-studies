@@ -106,7 +106,7 @@ dropEvery xs n = dropEvery' xs n n
 -- 17) Split a list into two parts; the length of the first part is given
 split' :: [a] -> Int -> ([a], [a])
 split' (x:xs) n
-    | n > 0 =   let (fp, l) = split' xs (n - 1) 
+    | n > 0 =   let (fp, l) = split' xs (n - 1)
                 in (x : fp, l)
 split' xs _  =   ([], xs)
 
@@ -153,3 +153,48 @@ diffSelect n m = do
 rndPermut :: [a] -> [a]
 rndPermut xs = map (xs !!) pos
     where pos = take (length xs - 1) . nub $ randomRs (0, length xs - 1) (mkStdGen 42)
+
+-- 26) Generate the combinations of K distinct objects chosen from the N elements of a list
+-- In how many ways can a committee of 3 be chosen from a group of 12 people?
+-- We all know that there are C(12,3) = 220 possibilities (C(N,K) denotes
+-- the well-known binomial coefficients). For pure mathematicians,
+-- this result may be great. But we want to really generate all the possibilities in a list
+combinations :: Int -> [a] -> [[a]]
+combinations 0 _ = [[]]
+combinations k xs = [ y:ys | y:xs' <- tails xs, ys <- combinations (k - 1) xs']
+
+-- 27) Group the elements of a set into disjoint subsets
+-- a) In how many ways can a group of 9 people work in 3 disjoint subgroups of 2, 3 and 4 persons? 
+-- Write a function that generates all the possibilities and returns them in a list
+group3 :: [a] -> [[[a]]]
+group3 = group' [2, 3, 4]
+
+-- b)  Generalize the above predicate in a way that we can specify a list of
+-- group sizes and the predicate will return a list of groups
+combinations' :: Int -> [a] -> [([a], [a])]
+combinations' 0 xs = [([], xs)]
+combinations' n [] = []
+combinations' n (x:xs) = ms ++ rs
+  where ms = [(x:ys,zs) | (ys,zs) <- combinations' (n - 1) xs]
+        rs = [(ys,x:zs) | (ys,zs) <- combinations' n xs]
+
+group' :: [Int] -> [a] -> [[[a]]]
+group' [] _ = [[]]
+group' (n:ns) xs = [y:ys | (y, rs) <- combinations' n xs, ys <- group' ns rs]
+
+-- 28) Sorting a list of lists according to length of sublists
+-- a) We suppose that a list contains elements that are lists themselves.
+-- The objective is to sort the elements of this list according to their length.
+-- E.g. short lists first, longer lists later, or vice versa
+lsort :: [[a]] -> [[a]]
+lsort = sortBy (\xs ys -> compare (length xs) (length ys))
+
+-- b) Again, we suppose that a list contains elements that are lists themselves.
+-- But this time the objective is to sort the elements of this list according to
+-- their length frequency; i.e., in the default, where sorting is done ascendingly, 
+-- lists with rare lengths are placed first, others with a more frequent length come later
+lfsort :: [[a]] -> [[a]]
+lfsort xs = concat subs
+    where   subs = lsort $ groupBy length' $ lsort xs
+            length' xs ys = length xs == length ys
+    

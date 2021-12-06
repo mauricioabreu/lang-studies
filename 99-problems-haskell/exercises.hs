@@ -1,3 +1,6 @@
+import Data.List
+import System.Random
+
 -- 1) Find the last element of a list
 myLast :: [a] -> a
 myLast [] = error "must pass a non empty list"
@@ -101,11 +104,11 @@ dropEvery xs n = dropEvery' xs n n
             dropEvery' (x:xs) n c = x : dropEvery' xs n (c - 1)
 
 -- 17) Split a list into two parts; the length of the first part is given
-split :: [a] -> Int -> ([a], [a])
-split (x:xs) n
-    | n > 0 =   let (fp, l) = split xs (n - 1) 
+split' :: [a] -> Int -> ([a], [a])
+split' (x:xs) n
+    | n > 0 =   let (fp, l) = split' xs (n - 1) 
                 in (x : fp, l)
-split xs _  =   ([], xs)
+split' xs _  =   ([], xs)
 
 -- 18) Extract a slice from a list
 -- Given two indices, i and k, the slice is the list containing the elements between the i'th and k'th element 
@@ -123,3 +126,30 @@ rotate xs n = drop n' xs ++ take n' xs
 removeAt :: Int -> [a] -> (Maybe a, [a])
 removeAt n xs | n > 0 = (Just (xs !! (n - 1)), take (n - 1) xs ++ drop n xs)
 removeAt _ xs = (Nothing, xs)
+
+-- 21) Insert an element at a given position into a list
+insertAt :: a -> [a] -> Int -> [a]
+insertAt x xs i = take (i - 1) xs ++ [x] ++ drop (i - 1) xs
+
+-- 22) Create a list containing all integers within a given range
+range :: Int -> Int -> [Int]
+range f t
+    | f == t = [t]
+    | f < t = f : range (f + 1) t
+    | otherwise = f : range (f - 1) t
+
+-- 23) Extract a given number of randomly selected elements from a list
+rndSelect :: [a] -> Int -> [a]
+rndSelect xs n = map (xs !!) rs
+    where rs = take n . nub $ randomRs (0, length xs - 1) (mkStdGen 42)
+
+-- 24) Lotto: Draw N different random numbers from the set 1..M
+diffSelect :: Int -> Int -> IO [Int]
+diffSelect n m = do
+    gen <- getStdGen
+    return . take n . nub $ randomRs (0, m) gen
+
+-- 25) Generate a random permutation of the elements of a list
+rndPermut :: [a] -> [a]
+rndPermut xs = map (xs !!) pos
+    where pos = take (length xs - 1) . nub $ randomRs (0, length xs - 1) (mkStdGen 42)

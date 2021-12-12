@@ -2,11 +2,6 @@ import Data.Maybe
 import Text.Regex.TDFA
 import System.Environment
 
-
-lakewood = Hotel Lakewood 3 110 90 80 80
-bridgewood = Hotel Bridgewood 4 160 60 110 50
-ridgewood = Hotel Ridgewood 5 220 150 100 40
-
 data Day = Monday
     | Tuesday
     | Wednesday
@@ -37,6 +32,10 @@ data Hotel = Hotel
 
 instance Ord Hotel where
     h1 <= h2 = rating h1 <= rating h2
+
+lakewood = Hotel Lakewood 3 110 90 80 80
+bridgewood = Hotel Bridgewood 4 160 60 110 50
+ridgewood = Hotel Ridgewood 5 220 150 100 40
 
 parseCustomerType :: String -> Maybe CustomerType
 parseCustomerType s = getCustomerType (s =~ "^Regular|Rewards")

@@ -42,7 +42,11 @@ parseCustomerType :: String -> Maybe CustomerType
 parseCustomerType s = getCustomerType (s =~ "^Regular|Rewards")
 
 parseDates :: String -> Maybe [Day]
-parseDates s = Just $ mapMaybe getDate (getAllTextMatches (s =~ "\\([a-z]{3,4}\\)") :: [String])
+parseDates s 
+    | length matches /= length days = Nothing
+    | otherwise = Just days
+    where   days = mapMaybe getDate matches
+            matches = getAllTextMatches (s =~ "\\([a-z]{3,4}\\)") :: [String]
 
 getCustomerType :: String -> Maybe CustomerType
 getCustomerType c
@@ -55,7 +59,7 @@ getDate d
     | d == "(mon)"  = Just Monday
     | d == "(tues)" = Just Tuesday
     | d == "(wed)"  = Just Wednesday
-    | d == "(thu)"  = Just Thursday
+    | d == "(thur)"  = Just Thursday
     | d == "(fri)"  = Just Friday
     | d == "(sat)"  = Just Saturday
     | d == "(sun)"  = Just Sunday

@@ -18,3 +18,30 @@ The input to the program will be a range of dates for a regular or rewards custo
 **INPUT 1:** Regular: 16Mar2009(mon), 17Mar2009(tues), 18Mar2009(wed)
 
 **OUTPUT 1:** Lakewoods
+
+## Running
+
+There are two ways to run this program: passing the input as arguments or passig a file with all inputs.
+
+Using args:
+
+```
+runhaskell Main.hs "Regular: 20Mar2009(fri), 21Mar2009(sat), 22Mar2009(sun)"
+
+Hotel Reservation
+Just Bridgewood
+```
+
+Using a file:
+
+```
+runhaskell Main.hs -f "inputs.txt"
+
+Hotel Reservation
+Just Lakewood
+Just Bridgewood
+Just Lakewood
+Nothing
+Nothing
+```
+

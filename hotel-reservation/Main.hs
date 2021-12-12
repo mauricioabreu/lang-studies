@@ -41,7 +41,7 @@ instance Ord Hotel where
 parseCustomerType :: String -> Maybe CustomerType
 parseCustomerType s = getCustomerType (s =~ "^Regular|Rewards")
 
-parseDates :: String -> Maybe [Day]
+parseDates :: String -> Maybe Dates
 parseDates s 
     | length matches /= length days = Nothing
     | otherwise = Just days
@@ -73,11 +73,11 @@ getRate Rewards d
     | d `elem` [Saturday, Sunday] = weekendRewardsRate
     | otherwise = weekdayRewardsRate
 
-priceForHotel :: CustomerType -> [Day] -> Hotel -> Int
+priceForHotel :: CustomerType -> Dates -> Hotel -> Int
 priceForHotel ct days hotel =
     sum $ map (getRate ct) days <*> [hotel]
 
-bestPrice :: [Hotel] -> CustomerType -> [Day] -> HotelName
+bestPrice :: [Hotel] -> CustomerType -> Dates -> HotelName
 bestPrice hs ct ds = name . snd . minimum $ zip prices hs
     where   prices = map (priceForHotel ct ds) hs
 
